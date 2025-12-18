@@ -6,28 +6,22 @@ on:
   pull_request:
     types: [labeled, synchronize, opened, ready_for_review]
 
-concurrency:
-  if: ${{ github.event.issue.pull_request }}
-    runs-on: ubuntu-latest
-
 jobs:
   ci:
-    # 実行条件まとめ
-    if: ${{ !github.event.issue.pull_request }}
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo A comment on issue $NUMBER
-        env:
-          NUMBER: ${{ github.event.issue.number }}
-
+    # PR に対して特定ユーザーからのコメント or 特定ラベルがある場合だけ実行
+    if: |
+      github.event_name == 'pull_request' && (
+        contains(github.event.pull_request.labels.*.name, 'ci-run') || 
+        contains(github.event.pull_request.user.login, '特定ユーザー名')
+      ) || 
+      (github.event_name == 'issue_comment' && github.event.comment.user.login == '特定ユーザー名')
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node (example)
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
@@ -37,5 +31,3 @@ jobs:
 
       - name: Run tests
         run: npm test
-
-        #初回テスト時プルリクエストする際に　@ci-run とコメント。
