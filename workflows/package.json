@@ -1,0 +1,11 @@
+{
+  "name": "pocco-restrict",
+  "version": "1.0.0",
+  "description": "Pocco Restrict CI",
+  "scripts": {
+    "test": "jest"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0"
+  }
+}
