@@ -42,4 +42,4 @@ jobs:
       - name: Run tests
         run: npm test
 
-        #初回テスト時プルリクエストする際に　@ci-run とコメント。
+        #初回テスト時プルリクエストする際に　@ci-run とコメント
