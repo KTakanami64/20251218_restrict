@@ -1,25 +1,24 @@
-name: Pocco_Restrict
+name: Pocco_Restrict_CI
 
 on:
   issue_comment:
     types: [created]
-  pull_request:
-    types: [labeled, synchronize, opened, ready_for_review]
 
 jobs:
-  ci:
-    # PR に対して特定ユーザーからのコメント or 特定ラベルがある場合だけ実行
+  run-ci:
+    # PR のコメントで、かつコメント本文に @ci-run が含まれる場合のみ実行
     if: |
-      github.event_name == 'pull_request' && (
-        contains(github.event.pull_request.labels.*.name, 'ci-run') || 
-        contains(github.event.pull_request.user.login, '特定ユーザー名')
-      ) || 
-      (github.event_name == 'issue_comment' && github.event.comment.user.login == '特定ユーザー名')
+      github.event.issue.pull_request != null &&
+      contains(github.event.comment.body, '@ci-run')
+
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout PR branch
         uses: actions/checkout@v4
+        with:
+          # PR のブランチをチェックアウト
+          ref: refs/pull/${{ github.event.issue.number }}/head
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -31,3 +30,4 @@ jobs:
 
       - name: Run tests
         run: npm test
+#@ci-run
