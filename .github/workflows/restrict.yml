@@ -6,8 +6,10 @@ on:
   pull_request:
     types: [labeled, synchronize, opened, ready_for_review]
 
-concurrency:
-  group: ci-${{ github.event.pull_request.number || github.event.issue.number }}
+cconcurrency:
+  group: >
+    ci-${{ github.event_name }}-
+    ${{ github.event.issue.number || github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
@@ -28,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout PR
         uses: actions/checkout@v4
 
       - name: Setup Node (example)
@@ -42,4 +44,4 @@ jobs:
       - name: Run tests
         run: npm test
 
-        #初回テスト時プルリクエストする際に　@ci-run とコメント。
+        #初回テスト時プルリクエストする際に　@ci-run とコメント.
