@@ -7,23 +7,19 @@ on:
     types: [labeled, synchronize, opened, ready_for_review]
 
 concurrency:
-  group: ci-${{ github.event.pull_request.number || github.event.issue.number }}
-  cancel-in-progress: true
+  if: ${{ github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
 
 jobs:
   ci:
     # 実行条件まとめ
-    if: >
-      (
-        github.event_name == 'issue_comment' &&
-        github.event.issue.pull_request &&
-        contains(github.event.comment.body, '@ci-run')
-      ) ||
-      (
-        github.event_name == 'pull_request' &&
-        !github.event.pull_request.draft &&
-        contains(github.event.pull_request.labels.*.name, 'ci-run')
-      )
+    if: ${{ !github.event.issue.pull_request }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          echo A comment on issue $NUMBER
+        env:
+          NUMBER: ${{ github.event.issue.number }}
 
     runs-on: ubuntu-latest
 
