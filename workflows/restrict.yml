@@ -8,8 +8,8 @@ jobs:
   run-ci:
     # PR のコメントで、かつコメント本文に @ci-run が含まれる場合のみ実行
     if: |
-      ${{github.event.issue.pull_request != null &&}}
-      contains({{github.event.comment.body}}, '@ci-run')
+      ${{github.event.issue.pull_request != null &&
+      contains(github.event.comment.body, '@ci-run')}}
 
     runs-on: ubuntu-latest
 
